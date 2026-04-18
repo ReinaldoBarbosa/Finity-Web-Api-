@@ -1,0 +1,6 @@
+@Finity_HostAddress = http://localhost:5145
+
+GET {{Finity_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
