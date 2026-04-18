@@ -39,7 +39,7 @@ A Finity API é responsável por toda a lógica de negócio do sistema, incluind
 1. Clone o repositório:
 
 ```
-git clone https://github.com/seu-usuario/finity-api.git
+git clone https://github.com/seu-usuario/finity-api.git](https://github.com/ReinaldoBarbosa/Finity-Web-Api-.git
 ```
 
 2. Acesse a pasta do projeto:
