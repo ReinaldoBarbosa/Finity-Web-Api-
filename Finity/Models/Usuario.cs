@@ -17,5 +17,7 @@ namespace Finity.Models
 
         public string StatusUsuario { get; set; }
         public string Matricula { get; set; }
+
+        public List<Assinatura> Assinaturas { get; set; }
     }
 }
