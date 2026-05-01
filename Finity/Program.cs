@@ -1,3 +1,4 @@
+using Finity.Controllers;
 using Finity.Data;
 using Finity.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -15,6 +16,7 @@ builder.Services.AddDbContext<FinityDbContext>(options =>
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AssinaturaService>();
+builder.Services.AddScoped<CategoriaService>();
 
 // 🔐 JWT
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);

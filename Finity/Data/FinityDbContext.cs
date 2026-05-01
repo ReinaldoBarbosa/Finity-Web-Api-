@@ -98,6 +98,22 @@ namespace Finity.Data
                       .HasForeignKey(a => a.UsuarioId);
             });
 
+            modelBuilder.Entity<Categoria>(entity =>
+            {
+                entity.ToTable("Categorias");
+
+                entity.HasKey(c => c.Id);
+                entity.Property(c => c.Id)
+                    .HasColumnName("id");
+
+                entity.Property(c => c.Nome)
+                    .HasColumnName("nome");
+
+                entity.Property(c => c.Descricao)
+                    .HasColumnName("descricao");
+            });
+
+
             base.OnModelCreating(modelBuilder);
         }
     }
