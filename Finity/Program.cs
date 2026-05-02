@@ -17,6 +17,7 @@ builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AssinaturaService>();
 builder.Services.AddScoped<CategoriaService>();
+builder.Services.AddScoped<DashboardService>();
 
 // 🔐 JWT
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
