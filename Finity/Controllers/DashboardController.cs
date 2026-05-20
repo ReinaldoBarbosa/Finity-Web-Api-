@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Finity.Controllers
 {
@@ -45,9 +46,11 @@ namespace Finity.Controllers
 
         private int GetUser()
         {
-            var userIdClaim = User.FindFirst("Id");
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
             if (userIdClaim == null)
                 throw new Exception("Usuário não autenticado");
+
             return int.Parse(userIdClaim.Value);
         }
 

@@ -66,5 +66,14 @@ namespace Finity.Services
 
             return assinatura;
         }
+
+        public List<Assinatura> BuscarProximas(int usuarioId)
+        {
+            return _context.Assinaturas
+                .Where(a => a.UsuarioId == usuarioId)
+                .OrderBy(a => a.DataVencimento)
+                .Take(4)
+                .ToList();
+        }
     }
 }

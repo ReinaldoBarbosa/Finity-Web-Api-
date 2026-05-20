@@ -40,5 +40,40 @@ namespace Finity.Services
             return usuario;
         }
 
+        public async Task<bool> AtualizarUsuarioAsync(
+            int id,
+            UsuarioUpdateDto dto
+        )
+        {
+            var usuario =
+                await _context.Usuarios.FindAsync(id);
+
+            if (usuario == null)
+                return false;
+
+            usuario.Nome = dto.Nome;
+
+            usuario.Email = dto.Email;
+
+            usuario.Cargo = dto.Cargo;
+
+            usuario.NivelAcesso = dto.NivelAcesso;
+
+            usuario.IdDepartamento = dto.IdDepartamento;
+
+            usuario.StatusUsuario = dto.StatusUsuario;
+
+            usuario.Matricula = dto.Matricula;
+
+            // Atualiza senha somente se preenchida
+            if (!string.IsNullOrEmpty(dto.Senha))
+            {
+                usuario.SenhaHash = BCrypt.Net.BCrypt.HashPassword(dto.Senha);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

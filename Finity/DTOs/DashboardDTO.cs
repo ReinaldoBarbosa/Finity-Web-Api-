@@ -7,5 +7,6 @@
         public int Pendentes { get; set; }
         public int TotalAssinaturas { get; set; }
         public int ProximosVencimentos { get; set; }
+        public List<object> GastosPorCategoria { get; set; }
     }
 }

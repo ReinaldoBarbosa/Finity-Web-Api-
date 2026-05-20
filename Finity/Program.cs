@@ -18,6 +18,8 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AssinaturaService>();
 builder.Services.AddScoped<CategoriaService>();
 builder.Services.AddScoped<DashboardService>();
+builder.Services.AddScoped<PagamentoService>();
+builder.Services.AddScoped<DepartamentoService>();
 
 // 🔐 JWT
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
@@ -41,6 +43,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Liberar",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 builder.Services.AddAuthorization();
 
 // 🎮 Controllers
@@ -61,6 +74,8 @@ if (app.Environment.IsDevelopment())
 
 // 🔐 Pipeline
 app.UseHttpsRedirection();
+
+app.UseCors("Liberar");
 
 app.UseAuthentication(); // 🔥 obrigatório
 app.UseAuthorization();

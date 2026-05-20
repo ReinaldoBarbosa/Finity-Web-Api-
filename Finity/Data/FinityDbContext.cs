@@ -12,9 +12,8 @@ namespace Finity.Data
         public DbSet<Models.Departamento> Departamentos { get; set; }
         public DbSet<Models.Categoria> Categorias { get; set; }
         public DbSet<Models.Assinatura> Assinaturas { get; set; }
+        public DbSet<Models.Pagamento> Pagamentos { get; set; }
 
-        // (futuro)
-        // public DbSet<Despesa> Despesas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -113,7 +112,46 @@ namespace Finity.Data
                     .HasColumnName("descricao");
             });
 
+            modelBuilder.Entity<Pagamento>(entity =>
+            {
+                entity.ToTable("Pagamento");
+                entity.HasKey(p => p.Id);
+                entity.Property(p => p.Id)
+                    .HasColumnName("id");
+                entity.Property(p => p.IdAssinatura)
+                    .HasColumnName("id_assinatura");
+                entity.Property(p => p.DataPagamento)
+                    .HasColumnName("data_pagamento");
+                entity.Property(p => p.ValorPago)
+                    .HasColumnName("valor_pago");
+                entity.Property(p => p.Status)
+                    .HasColumnName("status");
+                entity.Property(p => p.Observacao)
+                    .HasColumnName("observacao");
+                entity.Property(p => p.MesReferencia)
+                    .HasColumnName("mes_referencia");
+                entity.Property(p => p.AnoReferencia)
+                    .HasColumnName("ano_referencia");
 
+                entity.HasOne(p => p.Assinatura)
+                      .WithMany(a => a.Pagamentos)
+                      .HasForeignKey(p => p.IdAssinatura);
+            });
+
+            modelBuilder.Entity<Departamento>(entity =>
+            {
+                entity.ToTable("Departamento");
+
+                entity.HasKey(d => d.id);
+                entity.Property(d => d.id)
+                    .HasColumnName("id");
+
+                entity.Property(d => d.nome)
+                    .HasColumnName("nome");
+
+                entity.Property(d => d.descricao)
+                    .HasColumnName("descricao");
+            });
             base.OnModelCreating(modelBuilder);
         }
     }

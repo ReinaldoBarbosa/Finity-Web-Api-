@@ -34,5 +34,25 @@ namespace Finity.Controllers
 
             return Ok(resultado);
         }
+
+        [HttpPut("atualizar/{id}")]
+        public async Task<IActionResult> AtualizarUsuario(int id,[FromBody] UsuarioUpdateDto dto)
+        {
+            var atualizado =
+                await _service.AtualizarUsuarioAsync(id, dto);
+
+            if (!atualizado)
+            {
+                return NotFound(new
+                {
+                    mensagem = "Usuário não encontrado"
+                });
+            }
+
+            return Ok(new
+            {
+                mensagem = "Usuário atualizado com sucesso"
+            });
+        }
     }
 }

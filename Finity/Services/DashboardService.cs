@@ -1,6 +1,7 @@
 ﻿using Finity.Constants;
 using Finity.Data;
 using Finity.DTOs;
+using Microsoft.EntityFrameworkCore;
 
 namespace Finity.Services
 {
@@ -21,14 +22,25 @@ namespace Finity.Services
 
         public int ObterPendentes(int usuarioId)
         {
-            var total = _context.Assinaturas.Count(a => a.UsuarioId == usuarioId && a.Status == StatusAssinatura.Pendente);
-            return total;
+            return _context.Pagamentos
+                .Include(p => p.Assinatura)
+                .Count(p =>
+                    p.Assinatura.UsuarioId == usuarioId
+                    &&
+                    p.Status == StatusPagamento.Pendente
+                );
         }
 
         public decimal ObterTotalGasto(int usuarioId)
         {
-            var total = _context.Assinaturas.Where(a => a.UsuarioId == usuarioId && a.Status == StatusAssinatura.Ativa).Sum(a => (decimal?)a.Valor) ?? 0;
-            return total;
+            return _context.Pagamentos
+                .Include(p => p.Assinatura)
+                .Where(p =>
+                    p.Assinatura.UsuarioId == usuarioId
+                    &&
+                    p.Status == StatusPagamento.Paga
+                )
+                .Sum(p => (decimal?)p.ValorPago) ?? 0;
         }
 
         public decimal ObterGastoMensal(int usuarioId)
@@ -36,12 +48,20 @@ namespace Finity.Services
             var mesAtual = DateTime.Now.Month;
             var anoAtual = DateTime.Now.Year;
 
-            return _context.Assinaturas
-                .Where(a => a.UsuarioId == usuarioId &&
-                            a.DataVencimento.Month == mesAtual &&
-                            a.DataVencimento.Year == anoAtual &&
-                            a.Status == StatusAssinatura.Ativa)
-                .Sum(a => (decimal?)a.Valor) ?? 0;
+            return _context.Pagamentos
+                .Include(p => p.Assinatura)
+                .Where(p =>
+                    p.Assinatura.UsuarioId == usuarioId
+                    &&
+                    p.Status == StatusPagamento.Paga
+                    &&
+                    p.DataPagamento.HasValue
+                    &&
+                    p.DataPagamento.Value.Month == mesAtual
+                    &&
+                    p.DataPagamento.Value.Year == anoAtual
+                )
+                .Sum(p => (decimal?)p.ValorPago) ?? 0;
         }
 
         public int ObterProximosVencimentos(int usuarioId)
@@ -73,8 +93,31 @@ namespace Finity.Services
                 Pendentes = pendentes,
                 TotalGasto = totalGasto,
                 GastoMensal = gastoMensal,
-                ProximosVencimentos = proximosVencimentos
+                ProximosVencimentos = proximosVencimentos,
+                GastosPorCategoria = ObterGastosPorCategoria(usuarioId)
             };
+        }
+
+        public List<object> ObterGastosPorCategoria(int usuarioId)
+        {
+            var categorias = _context.Pagamentos
+                .Include(p => p.Assinatura)
+                .ThenInclude(a => a.Categoria)
+                .Where(p =>
+                    p.Assinatura.UsuarioId == usuarioId
+                    &&
+                    p.Status == StatusPagamento.Paga
+                )
+                .GroupBy(p => p.Assinatura.Categoria.Nome)
+                .Select(g => new
+                {
+                    Categoria = g.Key,
+                    Total = g.Sum(p => p.ValorPago)
+                })
+                .OrderByDescending(g => g.Total)
+                .ToList<object>();
+
+            return categorias;
         }
     }
 }

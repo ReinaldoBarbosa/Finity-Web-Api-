@@ -13,5 +13,8 @@
         public Usuario Usuario { get; set; }
         public string Descricao { get; set; }
         public DateTime DataCriacao { get; set; }
+
+        public ICollection<Pagamento> Pagamentos { get; set; }
+
     }
 }

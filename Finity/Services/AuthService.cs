@@ -19,7 +19,7 @@ namespace Finity.Services
             _config = config;
         }
 
-        public string Login(LoginDTO dto)
+        public LoginResponseDTO Login(LoginDTO dto)
         {
             var usuario = _context.Usuarios.FirstOrDefault(u => u.Email == dto.Email);
 
@@ -31,21 +31,43 @@ namespace Finity.Services
             if ( !senhaValida )
                 throw new Exception("Senha inválida");
 
-            return GerarToken(usuario);
+            var token = GerarToken(usuario);
+
+            return new LoginResponseDTO
+            {
+                Token = token,
+                Usuario = new UsuarioResponseDTO
+                {
+                    Id = usuario.Id,
+                    Nome = usuario.Nome,
+                    Email = usuario.Email,
+                    Cargo = usuario.Cargo,
+                    NivelAcesso = usuario.NivelAcesso,
+                    DepartamentoId = usuario.IdDepartamento,
+                    Matricula = usuario.Matricula
+                }
+            };
         }
 
 
         private string GerarToken(Usuario user)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_config["Jwt:Key"])
+            );
+
+            var creds = new SigningCredentials(
+                key,
+                SecurityAlgorithms.HmacSha256
+            );
 
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, user.Email),
-                new Claim("Id", user.Id.ToString()),
-                new Claim(ClaimTypes.Role, user.NivelAcesso)
 
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+
+                new Claim(ClaimTypes.Role, user.NivelAcesso)
             };
 
             var token = new JwtSecurityToken(
@@ -55,7 +77,7 @@ namespace Finity.Services
                 expires: DateTime.Now.AddHours(2),
                 signingCredentials: creds
             );
-            
+
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
