@@ -4,9 +4,9 @@ WORKDIR /src
 
 COPY . .
 
-RUN dotnet restore ./Finity/Finity.csproj
+RUN dotnet restore "Finity/Finity.csproj"
 
-RUN dotnet publish ./Finity/Finity.csproj -c Release -o /app/publish
+RUN dotnet publish "Finity/Finity.csproj" -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 
