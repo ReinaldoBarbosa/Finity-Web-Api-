@@ -1,4 +1,3 @@
-using Finity.Controllers;
 using Finity.Data;
 using Finity.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,9 +7,12 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔗 Conexão com banco
+// 🔗 Banco
 builder.Services.AddDbContext<FinityDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    )
+);
 
 // 📦 Services
 builder.Services.AddScoped<UsuarioService>();
@@ -22,50 +24,62 @@ builder.Services.AddScoped<PagamentoService>();
 builder.Services.AddScoped<DepartamentoService>();
 
 // 🔐 JWT
-var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
+var key = Encoding.UTF8.GetBytes(
+    builder.Configuration["Jwt:Key"]!
+);
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.RequireHttpsMetadata = false; // facilita em dev
+        options.RequireHttpsMetadata = false;
         options.SaveToken = true;
 
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
+        options.TokenValidationParameters =
+            new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
 
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(key)
-        };
+                ValidIssuer =
+                    builder.Configuration["Jwt:Issuer"],
+
+                ValidAudience =
+                    builder.Configuration["Jwt:Audience"],
+
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(key)
+            };
     });
 
+// 🌍 CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("Liberar",
+    options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.AllowAnyOrigin()
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
+            policy
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
         });
 });
 
+// 🔐 Authorization
 builder.Services.AddAuthorization();
 
 // 🎮 Controllers
 builder.Services.AddControllers();
 
-// 🔥 Swagger (MUITO importante pra debug)
+// 🔥 Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// 🧪 Swagger ativo em dev
+// 🧪 Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -75,9 +89,10 @@ if (app.Environment.IsDevelopment())
 // 🔐 Pipeline
 app.UseHttpsRedirection();
 
-app.UseCors("Liberar");
+app.UseCors("AllowFrontend");
 
-app.UseAuthentication(); // 🔥 obrigatório
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
