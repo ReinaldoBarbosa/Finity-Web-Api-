@@ -80,18 +80,20 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // 🧪 Swagger
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
+// 🌍 CORS
 app.UseCors("AllowFrontend");
 
+// 🔐 Auth
 app.UseAuthentication();
-
 app.UseAuthorization();
 
+// 🎮 Controllers
 app.MapControllers();
+
+// 🚀 Render
+app.Urls.Add("http://0.0.0.0:10000");
 
 app.Run();
