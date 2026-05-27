@@ -33,14 +33,9 @@ namespace Finity.Services
 
         public decimal ObterTotalGasto(int usuarioId)
         {
-            return _context.Pagamentos
-                .Include(p => p.Assinatura)
-                .Where(p =>
-                    p.Assinatura.UsuarioId == usuarioId
-                    &&
-                    p.Status == StatusPagamento.Paga
-                )
-                .Sum(p => (decimal?)p.ValorPago) ?? 0;
+            return _context.Assinaturas
+            .Where(a => a.UsuarioId == usuarioId)
+            .Sum(a => (decimal?)a.Valor) ?? 0;
         }
 
         public decimal ObterGastoMensal(int usuarioId)
