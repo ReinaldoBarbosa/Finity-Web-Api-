@@ -3,6 +3,7 @@ using Finity.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace Finity.Controllers
@@ -81,6 +82,24 @@ namespace Finity.Controllers
             var resultado = _service.BuscarProximas(id);
 
             return Ok(resultado);
+        }
+
+        [Authorize]
+        [HttpGet("{id}")]
+        public IActionResult BuscarPorId(int id)
+        {
+            var assinatura =
+                _service.BuscarPorId(id);
+
+            if (assinatura == null)
+            {
+                return NotFound(new
+                {
+                    mensagem = "Assinatura não encontrada"
+                });
+            }
+
+            return Ok(assinatura);
         }
 
     }

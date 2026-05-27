@@ -1,6 +1,7 @@
 ﻿using Finity.Data;
 using Finity.DTOs;
 using Finity.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Finity.Services
 {
@@ -17,7 +18,7 @@ namespace Finity.Services
         {
             return _context.Assinaturas.Where(a => a.UsuarioId == usuarioId).ToList();
         }
-
+        
         public Assinatura Deletar(int id, int usuarioId)
         {
             var assinatura = _context.Assinaturas.FirstOrDefault(a => a.Id == id && a.UsuarioId == usuarioId);
@@ -74,6 +75,28 @@ namespace Finity.Services
                 .OrderBy(a => a.DataVencimento)
                 .Take(4)
                 .ToList();
+        }
+
+        public AssinaturaDetalhesDTO? BuscarPorId(int id)
+        {
+            var assinatura = _context.Assinaturas
+                .Include(a => a.Categoria)
+                .FirstOrDefault(a => a.Id == id);
+
+            if (assinatura == null)
+                return null;
+
+            return new AssinaturaDetalhesDTO
+            {
+                Id = assinatura.Id,
+                Nome = assinatura.Nome,
+                Valor = assinatura.Valor,
+                DataCriacao = assinatura.DataCriacao,
+                DataVencimento = assinatura.DataVencimento,
+                Status = assinatura.Status,
+                Descricao = assinatura.Descricao,
+                Categoria = assinatura.Categoria.Nome
+            };
         }
     }
 }
