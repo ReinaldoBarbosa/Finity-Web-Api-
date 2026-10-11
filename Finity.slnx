@@ -1,3 +1,3 @@
 <Solution>
-  <Project Path="Finity/Finity.csproj" />
+  <Project Path="Finity.Api/Finity.Api.csproj" />
 </Solution>
