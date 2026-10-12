@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Finity.Api.Models;
+
 
 namespace Finity.Api.Data
 {
@@ -9,5 +11,7 @@ namespace Finity.Api.Data
             // Constructor logic here
             
         }
+
+        public DbSet<Finity.Api.Models.Empresa> Empresas { get; set; }
     }
 }

@@ -15,23 +15,6 @@ builder.Services.AddOpenApi();
 var app = builder.Build();
 
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-    try
-    {
-        var conectado = await db.Database.CanConnectAsync();
-        Console.WriteLine(
-            $"Conexão com o banco: {(conectado ? "SUCESSO" : "FALHOU")}");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Erro de conexão: {ex.Message}");
-    }
-}
-
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
