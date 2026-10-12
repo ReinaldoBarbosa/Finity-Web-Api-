@@ -1,9 +1,10 @@
 ﻿
-using Microsoft.EntityFrameworkCore;
 using Finity.Api.Models.Cadastro;
+using Finity.Api.Models.Consultas;
 using Finity.Api.Models.Financeiro;
-using Finity.Api.Models.Pagamentos;
 using Finity.Api.Models.Historico;
+using Finity.Api.Models.Pagamentos;
+using Microsoft.EntityFrameworkCore;
 
 namespace Finity.Api.Data
 {
@@ -31,13 +32,17 @@ namespace Finity.Api.Data
         public DbSet<RecebimentoContaReceber> RecebimentosContaReceber { get; set; }
 
         // Histórico
-        public DbSet<HistoricoVencimentoContaPagar>
-            HistoricoVencimentosContaPagar
-        { get; set; }
+        public DbSet<HistoricoVencimentoContaPagar> HistoricoVencimentosContaPagar { get; set; }
 
-        public DbSet<HistoricoVencimentoContaReceber>
-            HistoricoVencimentosContaReceber
-        { get; set; }
+        public DbSet<HistoricoVencimentoContaReceber> HistoricoVencimentosContaReceber { get; set; }
+
+        // Consultas e relatórios
+        public DbSet<ContaPagarResumo> ContasPagarResumo { get; set; }
+        public DbSet<ContaReceberResumo> ContasReceberResumo { get; set; }
+        public DbSet<DashboardFinanceiro> DashboardFinanceiro { get; set; }
+        public DbSet<MovimentacaoDetalhada> MovimentacoesDetalhadas { get; set; }
+        public DbSet<ResumoFinanceiro> ResumosFinanceiros { get; set; }
+        public DbSet<ResumoPorCategoria> ResumosPorCategoria { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -280,6 +285,43 @@ namespace Finity.Api.Data
                 .HasForeignKey(h => new { h.IdEmpresa, h.IdUsuario })
                 .HasPrincipalKey(u => new { u.IdEmpresa, u.Id })
                 .OnDelete(DeleteBehavior.NoAction);
+
+            // Views de consulta: somente leitura
+            modelBuilder.Entity<ContaPagarResumo>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToView("vw_ContasPagarResumo");
+            });
+
+            modelBuilder.Entity<ContaReceberResumo>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToView("vw_ContasReceberResumo");
+            });
+
+            modelBuilder.Entity<DashboardFinanceiro>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToView("vw_DashboardFinanceiro");
+            });
+
+            modelBuilder.Entity<MovimentacaoDetalhada>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToView("vw_MovimentacoesDetalhadas");
+            });
+
+            modelBuilder.Entity<ResumoFinanceiro>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToView("vw_ResumoFinanceiro");
+            });
+
+            modelBuilder.Entity<ResumoPorCategoria>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToView("vw_ResumoPorCategoria");
+            });
         }
 
     }

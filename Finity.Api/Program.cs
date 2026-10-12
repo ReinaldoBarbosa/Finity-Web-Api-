@@ -1,5 +1,4 @@
 using Finity.Api.Data;
-using Finity.Api.Models.Cadastro;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
