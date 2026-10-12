@@ -3,8 +3,10 @@ using Finity.Api.Data;
 using Finity.Api.Interfaces;
 using Finity.Api.Models.Cadastro;
 using Finity.Api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,52 @@ builder.Services.AddScoped<IEmpresaService, EmpresaService>();
 builder.Services.AddScoped<IPerfilService, PerfilService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();
+builder.Services.AddScoped<IAutenticacaoService, AutenticacaoService>();
+
+
+var jwtKey = builder.Configuration["Jwt:Key"]
+    ?? throw new InvalidOperationException(
+        "A chave JWT não foi configurada.");
+
+byte[] jwtKeyBytes;
+
+try
+{
+    jwtKeyBytes = Convert.FromBase64String(jwtKey);
+}
+catch (FormatException)
+{
+    throw new InvalidOperationException(
+        "A chave JWT deve estar em formato Base64 válido.");
+}
+
+if (jwtKeyBytes.Length < 32)
+{
+    throw new InvalidOperationException(
+        "A chave JWT deve possuir pelo menos 32 bytes.");
+}
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = "Finity.Api",
+
+            ValidateAudience = true,
+            ValidAudience = "Finity.Client",
+
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(jwtKeyBytes),
+
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.FromMinutes(1)
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 // Construção da aplicação
 var app = builder.Build();
@@ -33,6 +81,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

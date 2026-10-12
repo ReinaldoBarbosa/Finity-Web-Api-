@@ -1,6 +1,7 @@
 ﻿
 using Finity.Api.Dtos.Usuarios;
 using Finity.Api.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Finity.Api.Controllers;
@@ -23,6 +24,7 @@ public class UsuariosController : ControllerBase
         return Ok(usuarios);
     }
 
+    [Authorize]
     [HttpGet("{id:int}")]
     public async Task<ActionResult<UsuarioRespostaDto>> BuscarPorId(int id)
     {
