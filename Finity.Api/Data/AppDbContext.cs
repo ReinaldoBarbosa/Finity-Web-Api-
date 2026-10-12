@@ -13,5 +13,6 @@ namespace Finity.Api.Data
         }
 
         public DbSet<Finity.Api.Models.Empresa> Empresas { get; set; }
+        public DbSet<Finity.Api.Models.Perfil> Perfis { get; set; }
     }
 }
