@@ -1,7 +1,9 @@
 
 using Finity.Api.Data;
 using Finity.Api.Interfaces;
+using Finity.Api.Models.Cadastro;
 using Finity.Api.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +19,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Registro dos serviços de negócio
 builder.Services.AddScoped<IEmpresaService, EmpresaService>();
+builder.Services.AddScoped<IPerfilService, PerfilService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();
 
 // Construção da aplicação
 var app = builder.Build();
