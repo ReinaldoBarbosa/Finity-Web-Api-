@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Finity.Api.Models;
+using Finity.Api.Models.Cadastro;
 
 
 namespace Finity.Api.Data
@@ -12,7 +12,8 @@ namespace Finity.Api.Data
             
         }
 
-        public DbSet<Finity.Api.Models.Empresa> Empresas { get; set; }
-        public DbSet<Finity.Api.Models.Perfil> Perfis { get; set; }
+        public DbSet<Empresa> Empresas { get; set; }
+        public DbSet<Perfil> Perfis { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
     }
 }

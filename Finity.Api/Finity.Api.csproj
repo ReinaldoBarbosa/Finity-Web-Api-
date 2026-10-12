@@ -18,6 +18,9 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
+    <Folder Include="Models\Financeiro\" />
+    <Folder Include="Models\Historico\" />
+    <Folder Include="Models\Pagamentos\" />
   </ItemGroup>
 
 </Project>

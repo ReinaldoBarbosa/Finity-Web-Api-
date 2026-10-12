@@ -1,8 +1,7 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Finity.Api.Models;
+namespace Finity.Api.Models.Cadastro;
 
 [Table("Empresa")]
 public class Empresa
