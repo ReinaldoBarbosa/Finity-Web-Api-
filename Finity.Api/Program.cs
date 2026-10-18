@@ -27,6 +27,7 @@ builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();
 builder.Services.AddScoped<IAutenticacaoService, AutenticacaoService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<ICentroCustoService, CentroCustoService>();
+builder.Services.AddScoped<IContaPagarService, ContaPagarService>();
 
 
 var jwtKey = builder.Configuration["Jwt:Key"]

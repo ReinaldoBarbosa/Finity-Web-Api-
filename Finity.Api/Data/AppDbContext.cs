@@ -286,6 +286,17 @@ namespace Finity.Api.Data
                 .HasPrincipalKey(u => new { u.IdEmpresa, u.Id })
                 .OnDelete(DeleteBehavior.NoAction);
 
+            // Conta a pagar
+            modelBuilder.Entity<ContaPagar>()
+                .ToTable("Conta_Pagar", table =>
+                    table.HasTrigger("TR_Conta_Pagar_Valor_Imutavel_Apos_Baixa"));
+
+            modelBuilder.Entity<ContaPagar>()
+                .HasOne(c => c.Empresa)
+                .WithMany()
+                .HasForeignKey(c => c.IdEmpresa)
+                .OnDelete(DeleteBehavior.NoAction);
+
             // Views de consulta: somente leitura
             modelBuilder.Entity<ContaPagarResumo>(entity =>
             {
