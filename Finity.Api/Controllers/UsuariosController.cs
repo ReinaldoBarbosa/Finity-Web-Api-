@@ -24,7 +24,7 @@ public class UsuariosController : ControllerBase
         return Ok(usuarios);
     }
 
-    [Authorize]
+    [Authorize(Policy = "SomenteAdministrador")]
     [HttpGet("{id:int}")]
     public async Task<ActionResult<UsuarioRespostaDto>> BuscarPorId(int id)
     {

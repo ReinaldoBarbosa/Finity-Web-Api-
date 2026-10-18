@@ -33,10 +33,16 @@ public class AutenticacaoService : IAutenticacaoService
 
         var usuario = await _context.Usuarios
             .AsNoTracking()
+            .Include(u => u.Perfil)
             .FirstOrDefaultAsync(u => u.Email == email);
 
-        if (usuario is null || !usuario.Ativo)
-            return null;
+        if (usuario is null ||
+            !usuario.Ativo ||
+            usuario.Perfil is null ||
+            !usuario.Perfil.Ativo)
+                {
+                    return null;
+                }
 
         var resultado = _passwordHasher.VerifyHashedPassword(
             usuario,

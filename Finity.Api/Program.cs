@@ -25,6 +25,8 @@ builder.Services.AddScoped<IPerfilService, PerfilService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();
 builder.Services.AddScoped<IAutenticacaoService, AutenticacaoService>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<ICentroCustoService, CentroCustoService>();
 
 
 var jwtKey = builder.Configuration["Jwt:Key"]
@@ -69,7 +71,14 @@ builder.Services
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("SomenteAdministrador", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("id_perfil", "2");
+    });
+});
 
 // Construção da aplicação
 var app = builder.Build();
